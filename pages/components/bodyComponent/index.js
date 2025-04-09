@@ -4,7 +4,7 @@ const bodyContainer = {
     width: "600px",
     height: "100%",
     backdropFilter: "blur(5px)",
-    backgroundColor: " rgba(255, 255, 255, 0.11)",
+    backgroundColor: " rgba(255, 255, 255, 0.06)",
     margin: "40px 40px 40px 0",
     padding: "30px",
     borderRadius: "20px",
@@ -23,13 +23,13 @@ const chestStyles = {
     position: "absolute",
     height: "480px",
     left: "58px",
-    filter: "brightness(0) saturate(100%) invert(18%) sepia(83%) saturate(7500%) hue-rotate(0deg) brightness(101%) contrast(107%)"
 }
 
 const absStyles = {
     position: "absolute",
     height: "480px",
-    left: "58px"
+    left: "58px",
+    filter: "brightness(0) saturate(100%) invert(18%) sepia(83%) saturate(7500%) hue-rotate(0deg) brightness(101%) contrast(107%)"
 }
 
 const shoulderStyles = {
@@ -41,7 +41,7 @@ const shoulderStyles = {
 const bicepStyles = {
     position: "absolute",
     height: "480px",
-    left: "58px"
+    left: "58px",
 }
 
 const forearmStyles = {

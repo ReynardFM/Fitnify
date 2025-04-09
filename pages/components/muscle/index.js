@@ -4,13 +4,20 @@ export default function Muscle(){
 
     const [all_muscle, addMuscle] = useState([]);
 
-    
+    const url = 'https://exercisedb.p.rapidapi.com/status';
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': 'd8ea3011bemsh94792d8164d1bcfp1d5fdfjsn636fe5314fde',
+            'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
+        }
+    };
 
     useEffect(() => {        
-        fetch("https://wger.de/api/v2/muscle/")
+        fetch(url, options)
             .then((response) => response.json())
             .then((data) => {
-                const muscles = data.results.map((item) => ({
+                const muscles = data.map((item) => ({
                     id: item.id,
                     muscle: item.name_en || item.name // Simplify logic
                 }));

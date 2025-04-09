@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap');
 
 *{
     color: white;
@@ -6,6 +7,15 @@
 
 body{
     background-image: url("/resources/background.png");
+    background-position: center;
+    background-size: 99%;
+    background-position: center top;
+}
+
+.mainText {
+    font-family: "Special Gothic Expanded One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .headerButton {

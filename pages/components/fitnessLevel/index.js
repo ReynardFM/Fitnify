@@ -2,61 +2,53 @@ import { Outfit } from "next/font/google";
 import {useState} from 'react';
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
+const formContainer = {
+    width: "400px",
+    height: "100%",
+    backdropFilter: "blur(5px)",
+    backgroundColor: " rgba(255, 255, 255, 0.06)",
+    margin: "40px",
+    padding: "30px",
+    borderRadius: "20px",
+    border: "2px solid rgba(255, 255, 255, 0.2)"
+}
 
-export default function FitnessLevel(){
-    const [unit, setUnit] = useState('metric');
-    const [gender, setGender] = useState('male');
-    const [age, setAge] = useState('');
-    const [height, setHeight] = useState('');
-    const [weight, setWeight] = useState('');
-    const [activityLevel, setActivityLevel] = useState('sedentary');
-    const [results, setResults] = useState(null);
-    const [errors, setErrors] = useState({});
-    const formContainer = {
-        width: "400px",
-        height: "100%",
-        backdropFilter: "blur(5px)",
-        backgroundColor: " rgba(255, 255, 255, 0.06)",
-        margin: "40px",
-        padding: "30px",
-        borderRadius: "20px",
-        border: "2px solid rgba(255, 255, 255, 0.2)"
-    }
-    
-    const logo = {
-        fontWeight: "600",
-        fontSize: "30px",
-        letterSpacing: "4px"
-    }
-    
-    const formSelector = {
-        display: "flex",
-        flexDirection: "column"
-    }
-    
-    const resultsStyle = {
-        margin: "10px 0",
-        fontSize: "16px",
-        fontWeight: "800"
-    }
-    const pageOrganization = {
-      display: "flex",
-      flexDirection: "row"
-    }
+const logo = {
+    fontWeight: "600",
+    fontSize: "30px",
+    letterSpacing: "4px"
+}
 
-    const activityMultipliers = {
-        sedentary: 1.2,
-        light: 1.375,
-        moderate: 1.55,
-        active: 1.725,
-        extreme: 1.9
-      };
+const formSelector = {
+    display: "flex",
+    flexDirection: "column"
+}
+
+const resultsStyle = {
+    margin: "10px 0",
+    fontSize: "16px",
+    fontWeight: "800"
+}
+const pageOrganization = {
+  display: "flex",
+  flexDirection: "row"
+}
+
+const activityMultipliers = {
+    sedentary: 1.2,
+    light: 1.375,
+    moderate: 1.55,
+    active: 1.725,
+    extreme: 1.9
+  };
+
+export default function FitnessLevel({showSecondForm ,secondForm, goal, equipments, results, unit, errors, weight, height, age, gender,activityLevel, setGoal, setEquipments , setGender , setAge , setHeight , setWeight , setActivityLevel , setResults , setErrors}) {
     
       const validateInputs = () => {
-        const newErrors = {};
+        const newErrors = {age:"", height:"", weight:""};
         
         if (!age || age < 15 || age > 80) newErrors.age = "Please enter a valid age (15-80)";
-        if (!height || height <= 0) newErrors.height = "Please enter a valid height";
+        if (!height || height <= 0) newErrors.height = "Please enter a valid height"; 
         if (!weight || weight <= 0) newErrors.weight = "Please enter a valid weight";
         
         setErrors(newErrors);
@@ -106,8 +98,8 @@ export default function FitnessLevel(){
       }
     return (
         <div style={formContainer}>
-            <h1 className={outfit.className} style={logo}></h1>
-            <form onSubmit={CalculateResult}> 
+            {!secondForm ? (
+                <form onSubmit={CalculateResult}> 
                 <div style={formSelector}>
                 <label>Select preferred measuring system:</label>
                     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -207,10 +199,57 @@ export default function FitnessLevel(){
                         <p><b>BMI: </b>{results.bmi}</p>
                         <p><b>BMR: </b>{results.bmr} calories/day</p>
                         <p><b>TDEE: </b>{results.tdee} calories/day</p>
+
+                        <button type="button" onClick={() => showSecondForm(true)} // Show the second form
+                        className={`calculateButton ${outfit.className}`}>
+                        NEXT
+                        </button>
                     </div>
+
                 )}
             </form>
+            ) : (
+                <form>
+                <div>
+                    <label>What is your goal of doing exercise?</label>
+                    <select
+                        value={goal}
+                        onChange={(e) => setGoal(e.target.value)}
+                        className='formInput'>
 
+                        <option value="stronger">Get Stronger</option>
+                        <option value="muscle">Build Muscle Mass</option>
+                        <option value="lean_defined">Get Lean and Defined</option>
+                        <option value="bodyWeight">Reduce BodyWeight</option>
+                        <option value="health">Improve Health and Wellness</option>
+                        <option value="sports">Boost Sports Performance</option>
+                    </select>
+                </div>
+                <div>
+                    <label>How many weights or gym equipment do you have?</label>
+                    <input 
+                        type = 'number'
+                        value = {equipments} placeholder="Enter the amount of your equipments"
+                        className='formInput'
+                        onChange={(e) => setEquipments(e.target.value)}/>
+                </div>
+                <div>
+                    <label>What is your level of fitness?</label>
+                    <select
+                        value={goal}
+                        onChange={(e) => setGoal(e.target.value)}
+                        className='formInput'>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advance">Advance</option>
+                    </select>
+                </div>
+                <button type="button" onClick={() => showSecondForm(false)} // Show the second form
+                        className={`calculateButton ${outfit.className}`}>
+                BACK
+                </button>
+            </form>
+            )}         
         </div>
     )
 }
