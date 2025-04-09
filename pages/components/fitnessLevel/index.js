@@ -1,34 +1,7 @@
-import {useState} from 'react';
 import { Outfit } from "next/font/google";
-
+import {useState} from 'react';
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
-const formContainer = {
-    width: "400px",
-    height: "100%",
-    backdropFilter: "blur(5px)",
-    backgroundColor: " rgba(255, 255, 255, 0.06)",
-    margin: "40px",
-    padding: "30px",
-    borderRadius: "20px",
-    border: "2px solid rgba(255, 255, 255, 0.2)"
-}
-
-const logo = {
-    fontWeight: "600",
-    fontSize: "30px",
-    letterSpacing: "4px"
-}
-
-const formSelector = {
-    display: "flex",
-    flexDirection: "column"
-}
-
-const userSelector = {
-    display: "flex",
-    flexDirection: "row"
-}
 
 export default function FitnessLevel(){
     const [unit, setUnit] = useState('metric');
@@ -39,68 +12,98 @@ export default function FitnessLevel(){
     const [activityLevel, setActivityLevel] = useState('sedentary');
     const [results, setResults] = useState(null);
     const [errors, setErrors] = useState({});
-  
+    const formContainer = {
+        width: "400px",
+        height: "100%",
+        backdropFilter: "blur(5px)",
+        backgroundColor: " rgba(255, 255, 255, 0.06)",
+        margin: "40px",
+        padding: "30px",
+        borderRadius: "20px",
+        border: "2px solid rgba(255, 255, 255, 0.2)"
+    }
+    
+    const logo = {
+        fontWeight: "600",
+        fontSize: "30px",
+        letterSpacing: "4px"
+    }
+    
+    const formSelector = {
+        display: "flex",
+        flexDirection: "column"
+    }
+    
+    const resultsStyle = {
+        margin: "10px 0",
+        fontSize: "16px",
+        fontWeight: "800"
+    }
+    const pageOrganization = {
+      display: "flex",
+      flexDirection: "row"
+    }
+
     const activityMultipliers = {
-      sedentary: 1.2,
-      light: 1.375,
-      moderate: 1.55,
-      active: 1.725,
-      extreme: 1.9
-    };
+        sedentary: 1.2,
+        light: 1.375,
+        moderate: 1.55,
+        active: 1.725,
+        extreme: 1.9
+      };
+    
+      const validateInputs = () => {
+        const newErrors = {};
+        
+        if (!age || age < 15 || age > 80) newErrors.age = "Please enter a valid age (15-80)";
+        if (!height || height <= 0) newErrors.height = "Please enter a valid height";
+        if (!weight || weight <= 0) newErrors.weight = "Please enter a valid weight";
+        
+        setErrors(newErrors);
+      };
   
-    const validateInputs = () => {
-      const newErrors = {};
-      
-      if (!age || age < 15 || age > 80) newErrors.age = "Please enter a valid age (15-80)";
-      if (!height || height <= 0) newErrors.height = "Please enter a valid height";
-      if (!weight || weight <= 0) newErrors.weight = "Please enter a valid weight";
-      
-      setErrors(newErrors);
-    };
-
-    const CalculateResult = (event) => {
-        event.preventDefault();        
-        if (!validateInputs()) {
-            console.log("Form submitted successfully!");
-        // Convert to metric if necessary
-        const weightKg = unit === 'metric' ? weight : weight * 0.453592;
-        const heightM = unit === 'metric' ? height / 100 : height * 0.0254;
-
-        // Calculate BMI
-        const bmi = weightKg / (heightM * heightM);
-
-        // Calculate BMR (Harris-Benedict Equation)
-        let bmr;
-        if (gender === 'male') {
-        bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightM*100) - (5.677 * age);
-        } else {
-        bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightM*100) - (4.330 * age);
-        }
-
-        // Calculate TDEE
-        const tdee = bmr * activityMultipliers[activityLevel];
-
-        setResults({
-            bmi: parseFloat(bmi.toFixed(1)),
-            bmr: Math.round(bmr),
-            tdee: Math.round(tdee)
-        });
-        } else {
-            console.log("Form validation failed");
-        }
-    }
-
-    const handleAgeChange = (e) => {
-        setAge(e.target.value);
-    }
-
-    const handleWeightChange = (e) => {
-        setWeight(e.target.value);
-    }
-    const handleHeightChange = (e) => {
-        setHeight(e.target.value);
-    }
-
+      const CalculateResult = (event) => {
+          event.preventDefault();        
+          if (!validateInputs()) {
+              console.log("Form submitted successfully!");
+          // Convert to metric if necessary
+          const weightKg = unit === 'metric' ? weight : weight * 0.453592;
+          const heightM = unit === 'metric' ? height / 100 : height * 0.0254;
+  
+          // Calculate BMI
+          const bmi = weightKg / (heightM * heightM);
+  
+          // Calculate BMR (Harris-Benedict Equation)
+          let bmr;
+          if (gender === 'male') {
+          bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightM*100) - (5.677 * age);
+          } else {
+          bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightM*100) - (4.330 * age);
+          }
+  
+          // Calculate TDEE
+          const tdee = bmr * activityMultipliers[activityLevel];
+  
+          setResults({
+              bmi: parseFloat(bmi.toFixed(1)),
+              bmr: Math.round(bmr),
+              tdee: Math.round(tdee)
+          });
+          } else {
+              console.log("Form validation failed");
+          }
+      }
+  
+      const handleAgeChange = (e) => {
+          setAge(e.target.value);
+      }
+  
+      const handleWeightChange = (e) => {
+          setWeight(e.target.value);
+      }
+      const handleHeightChange = (e) => {
+          setHeight(e.target.value);
+      }
     return (
         <div style={formContainer}>
             <h1 className={outfit.className} style={logo}></h1>
@@ -200,10 +203,10 @@ export default function FitnessLevel(){
                 <button type="submit" className={`calculateButton ${outfit.className}`}>CALCULATE</button>
                 {results && (
                     <div>
-                        <h3>Results</h3>
-                        <p>BMI: {results.bmi}</p>
-                        <p>BMR: {results.bmr} calories/day</p>
-                        <p>TDEE: {results.tdee} calories/day</p>
+                        <h1 style={resultsStyle}>Results:</h1>
+                        <p><b>BMI: </b>{results.bmi}</p>
+                        <p><b>BMR: </b>{results.bmr} calories/day</p>
+                        <p><b>TDEE: </b>{results.tdee} calories/day</p>
                     </div>
                 )}
             </form>

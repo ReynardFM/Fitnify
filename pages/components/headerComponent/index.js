@@ -16,7 +16,7 @@ const header = {
 const logo = {
     fontWeight: "600",
     fontSize: "30px",
-    letterSpacing: "6px"
+    letterSpacing: "6px",
 }
 
 const headerNav = {
@@ -27,7 +27,7 @@ const headerNav = {
 export default function Header(){
     return(
         <div style={header}>
-            <h1 className={outfit.className} style={logo}>FITNIFY</h1>
+            <h1 className={outfit.className} style={logo}>FITNIFY™</h1>
             <nav style={headerNav}>
                 <a href="#" className={`headerButton ${outfit.className}`}>TRAINING</a>
                 <a href="#" className={`headerButton ${outfit.className}`}>USER</a>

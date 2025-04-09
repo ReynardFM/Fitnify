@@ -5,7 +5,7 @@
 }
 
 body{
-    background-image: url("../resources/background.png");
+    background-image: url("/resources/background.png");
 }
 
 .headerButton {
