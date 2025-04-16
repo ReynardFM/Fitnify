@@ -7,7 +7,7 @@ export default function AiPage({data}) {
     useEffect(()=>{fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + "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",
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`, 
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
