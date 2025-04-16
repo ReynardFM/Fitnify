@@ -1,5 +1,3 @@
-const apiKey = "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";
-
 export default function Test(){
   let workoutPlan = [{ "Day": "1",
     "exercise1": { "name": "Warm-Up Stretch", "time": "1 minute" },
