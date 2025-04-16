@@ -2,10 +2,8 @@ import React from 'react';
 import Header from './components/headerComponent';
 import Muscle from './components/muscle';
 import FitnessLevel from './components/fitnessLevel';
-import Body from './components/bodyComponent';
 import {useState, useEffect} from 'react';
 import { Outfit } from "next/font/google";
-import Test from './api';
 import { lazy, Suspense } from 'react';
 const LazyPlan = lazy(() => import('./api/ai'));
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
@@ -13,7 +11,7 @@ const pageOrganization = {
   display: "flex",
   justifyContent: "center",  
   alignItems: "center",      
-  flexDirection: "row"
+  flexDirection: "column"
 }
 
 const mainPageText = {
@@ -21,7 +19,8 @@ const mainPageText = {
 }
 
 export default function Home() {
-  const [Plan, setPlan] = useState(null);
+  
+  const [plan, setPlan] = useState(null);
   const [data, setData] = useState({
     unit:'metric',
     gender:'male',
@@ -34,11 +33,18 @@ export default function Home() {
     goal:'stronger',
     level:'beginner'
   })
-
   
-  const [errors, setErrors] = useState({age:"", height:"", weight:""});
+  
+  const [errors, setErrors] = useState({age:"", height:"", weight:"", equipments:""});
   const [secondForm, showSecondForm] = useState (false);
   const [submit, setSubmit] = useState (false);
+  useEffect(()=>{
+    if(localStorage.getItem("Plan")){
+      setPlan(JSON.parse(localStorage.getItem("Plan")));
+      setSubmit(true);
+    }
+  },[])
+
   return (
     <>
       <Header/>
@@ -55,7 +61,7 @@ export default function Home() {
         </div>}
         {submit && <div>
           <Suspense fallback={"Loooooaaaading........"}>
-            <LazyPlan data = {data}/>
+            <LazyPlan data = {data} plan={plan} setPlan={setPlan}/>
           </Suspense>
         </div>}
         <div>
