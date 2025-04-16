@@ -10,7 +10,10 @@ const header = {
     padding: "30px",
     backdropFilter: "blur(5px)",
     backgroundColor: " rgba(255, 255, 255, 0.06)",
-    borderBottom: "2px solid rgba(255, 255, 255, 0.2)"
+    borderBottom: "2px solid rgba(255, 255, 255, 0.2)",
+    position: "fixed",
+    zIndex: "2",
+    width: "100%",
 }
 
 const logo = {
@@ -29,7 +32,6 @@ export default function Header(){
         <div style={header}>
             <h1 className={outfit.className} style={logo}>FITNIFY™</h1>
             <nav style={headerNav}>
-                <a href="#" className={`headerButton ${outfit.className}`}>TRAINING</a>
                 <a href="#" className={`headerButton ${outfit.className}`}>USER</a>
             </nav>
         </div>

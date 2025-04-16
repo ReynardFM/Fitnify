@@ -11,7 +11,8 @@ const styles = {
     margin: "40px",
     padding: "30px",
     borderRadius: "20px",
-    border: "2px solid rgba(255, 255, 255, 0.2)"
+    border: "2px solid rgba(255, 255, 255, 0.2)",
+    marginTop: "140px"
   },
   formSelector: {
     display: "flex",
@@ -109,6 +110,30 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
     return hasErrors;
   };
 
+  const validateSecondFormInputs = () => {
+    const { equipments } = data;
+    const newErrors = { equipments: "" };
+    let hasErrors = false;
+  
+    if (!equipments || equipments < 0) {
+      newErrors.equipments = "Please enter a valid number of equipments";
+      hasErrors = true;
+    }
+  
+    setErrors(newErrors);
+    return hasErrors;
+  };
+  
+  const handleSecondFormSubmit = (event) => {
+    event.preventDefault(); // Prevent the form from reloading the page
+  
+    const hasErrors = validateSecondFormInputs();
+  
+    if (!hasErrors) {
+      setSubmit(true); // Proceed with submission logic
+    }
+  };
+
   const handleInputChange = (field) => (e) => {
     setData({ ...data, [field]: e.target.value });
   };
@@ -186,7 +211,7 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
 
   return (
     <div style={styles.formContainer}>
-      {!secondForm ? (
+      {!secondForm ? (  
         <form onSubmit={calculateResult}>
           <RadioGroup
             label="Select preferred measuring system:"
@@ -257,7 +282,7 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
           )}
         </form>
       ) : (
-        <form>
+        <form onSubmit={handleSecondFormSubmit}>
           <FormInput
             label="What is your goal of doing exercise?"
             value={data.goal}
@@ -270,6 +295,7 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
             value={data.equipments}
             placeholder="Enter the amount of your equipments"
             onChange={handleInputChange('equipments')}
+            error={errors.equipments}
           />
 
           <FormInput
@@ -284,11 +310,11 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
             onClick={() => showSecondForm(false)}
             className={`calculateButton ${outfit.className}`}
           >
+
             BACK
           </button>
           <button 
-            type="button" 
-            onClick={() => setSubmit(true)}
+            type="submit" 
             className={`calculateButton ${outfit.className}`}
           >
             SUBMIT
