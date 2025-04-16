@@ -73,7 +73,7 @@ export default function AiPage({data}) {
       .catch(error => console.error('Error:', error));
     },[]);
     // plan[] -> {day, exercise}
-    // exercise[] -> {name, (Set, Reps or time), mainMuscle}
+    // exercise[] -> {name, (Set, Reps or time), mainMuscle} i did
     return(
         <div className='daySchedule'>
             <h1>AI Generated Daily Exercise Routine</h1>
