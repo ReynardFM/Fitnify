@@ -120,7 +120,7 @@ export default function AiPage({ data, plan, setPlan }) {
     const options = {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': 'd8ea3011bemsh94792d8164d1bcfp1d5fdfjsn636fe5314fde',
+        'x-rapidapi-key': (process.env.DB_API),
         'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
       }
     };
@@ -153,7 +153,7 @@ export default function AiPage({ data, plan, setPlan }) {
       console.log("Start fetching fitness routine...");
       const fetchFitnessRoutine = async () => {
         try {
-          const client = new HfInference("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");
+          const client = new HfInference(process.env.AI_API);
           
           const chatCompletion = await client.chatCompletion({
             model: "meta-llama/Llama-3.2-3B-Instruct",
