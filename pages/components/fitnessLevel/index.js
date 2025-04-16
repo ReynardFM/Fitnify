@@ -1,256 +1,300 @@
 import { Outfit } from "next/font/google";
-import {useState} from 'react';
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
-const formContainer = {
+// Styles moved to separate object
+const styles = {
+  formContainer: {
     width: "400px",
     height: "100%",
     backdropFilter: "blur(5px)",
-    backgroundColor: " rgba(255, 255, 255, 0.06)",
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
     margin: "40px",
     padding: "30px",
     borderRadius: "20px",
     border: "2px solid rgba(255, 255, 255, 0.2)"
-}
-
-const logo = {
-    fontWeight: "600",
-    fontSize: "30px",
-    letterSpacing: "4px"
-}
-
-const formSelector = {
+  },
+  formSelector: {
     display: "flex",
     flexDirection: "column"
-}
-
-const resultsStyle = {
+  },
+  radioGroup: {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center"
+  },
+  resultsStyle: {
     margin: "10px 0",
     fontSize: "16px",
     fontWeight: "800"
-}
-const pageOrganization = {
-  display: "flex",
-  flexDirection: "row"
-}
+  }
+};
 
-const activityMultipliers = {
-    sedentary: 1.2,
-    light: 1.375,
-    moderate: 1.55,
-    active: 1.725,
-    extreme: 1.9
+const activityMultipliers = [
+  1.2,
+  1.375,
+  1.55,
+  1.725,
+  1.9
+];
+
+// Reusable form input component
+const FormInput = ({ label, type = "number", value, placeholder, onChange, error, selectOptions }) => {
+  return (
+    <div style={styles.formSelector}>
+      <label>{label}</label>
+      {selectOptions ? (
+        <select value={value} onChange={onChange} className="formInput">
+          {selectOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type={type}
+          value={value}
+          placeholder={placeholder}
+          onChange={onChange}
+          className="formInput"
+        />
+      )}
+      {error && <div>{error}</div>}
+    </div>
+  );
+};
+
+// Reusable radio group component
+const RadioGroup = ({ label, name, value, options, onChange }) => {
+  return (
+    <div style={styles.formSelector}>
+      <label>{label}</label>
+      <div style={styles.radioGroup}>
+        {options.map(option => (
+          <span key={option.value}>
+            <input
+              type="radio"
+              name={name}
+              checked={value === option.value}
+              onChange={() => onChange(option.value)}
+            />
+            <span style={{ marginLeft: "5px" }}>{option.label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default function FitnessLevel({ showSecondForm, secondForm, data, setData, errors, setErrors, setSubmit }) {
+  const validateInputs = () => {
+    const { age, height, weight } = data;
+    const newErrors = { age: "", height: "", weight: "" };
+    let hasErrors = false;
+    
+    if (!age || age < 15 || age > 80) {
+      newErrors.age = "Please enter a valid age (15-80)";
+      hasErrors = true;
+    }
+    if (!height || height <= 0) {
+      newErrors.height = "Please enter a valid height";
+      hasErrors = true;
+    } 
+    if (!weight || weight <= 0) {
+      newErrors.weight = "Please enter a valid weight";
+      hasErrors = true;
+    }
+    
+    setErrors(newErrors);
+    return hasErrors;
   };
 
-export default function FitnessLevel({showSecondForm ,secondForm, goal, equipments, results, unit, errors, weight, height, age, gender,activityLevel, setGoal, setEquipments , setGender , setAge , setHeight , setWeight , setActivityLevel , setResults , setErrors}) {
+  const handleInputChange = (field) => (e) => {
+    setData({ ...data, [field]: e.target.value });
+  };
+
+  const calculateResult = (event) => {
+    event.preventDefault();     
+    const { unit, age, height, weight, gender, activityLevel } = data;
+    const hasErrors = validateInputs();
     
-      const validateInputs = () => {
-        const newErrors = {age:"", height:"", weight:""};
-        
-        if (!age || age < 15 || age > 80) newErrors.age = "Please enter a valid age (15-80)";
-        if (!height || height <= 0) newErrors.height = "Please enter a valid height"; 
-        if (!weight || weight <= 0) newErrors.weight = "Please enter a valid weight";
-        
-        setErrors(newErrors);
-      };
-  
-      const CalculateResult = (event) => {
-          event.preventDefault();        
-          if (!validateInputs()) {
-              console.log("Form submitted successfully!");
-          // Convert to metric if necessary
-          const weightKg = unit === 'metric' ? weight : weight * 0.453592;
-          const heightM = unit === 'metric' ? height / 100 : height * 0.0254;
-  
-          // Calculate BMI
-          const bmi = weightKg / (heightM * heightM);
-  
-          // Calculate BMR (Harris-Benedict Equation)
-          let bmr;
-          if (gender === 'male') {
-          bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightM*100) - (5.677 * age);
-          } else {
-          bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightM*100) - (4.330 * age);
-          }
-  
-          // Calculate TDEE
-          const tdee = bmr * activityMultipliers[activityLevel];
-  
-          setResults({
-              bmi: parseFloat(bmi.toFixed(1)),
-              bmr: Math.round(bmr),
-              tdee: Math.round(tdee)
-          });
-          } else {
-              console.log("Form validation failed");
-          }
+    if (!hasErrors) {
+      // Convert to metric if necessary
+      const weightKg = unit === 'metric' ? weight : weight * 0.453592;
+      const heightM = unit === 'metric' ? height / 100 : height * 0.0254;
+
+      // Calculate BMI
+      const bmi = weightKg / (heightM * heightM);
+
+      // Calculate BMR (Harris-Benedict Equation)
+      let bmr;
+      if (gender === 'male') {
+        bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightM*100) - (5.677 * age);
+      } else {
+        bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightM*100) - (4.330 * age);
       }
-  
-      const handleAgeChange = (e) => {
-          setAge(e.target.value);
-      }
-  
-      const handleWeightChange = (e) => {
-          setWeight(e.target.value);
-      }
-      const handleHeightChange = (e) => {
-          setHeight(e.target.value);
-      }
-    return (
-        <div style={formContainer}>
-            {!secondForm ? (
-                <form onSubmit={CalculateResult}> 
-                <div style={formSelector}>
-                <label>Select preferred measuring system:</label>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                        <span>
-                            <input
-                                type="radio"
-                                name="unit"
-                                checked={unit === 'metric'}
-                                onChange={() => setUnit('metric')}
-                            />
-                            <span style={{ marginLeft: "5px" }}>Metric (cm, kg)</span>
-                        </span>
-                        <span>
-                            <input
-                                type="radio"
-                                name="unit"
-                                checked={unit === 'imperial'}
-                                onChange={() => setUnit('imperial')}
-                            />
-                            <span style={{ marginLeft: "5px" }}>Imperial (inches, lbs)</span>
-                        </span>
-                    </div>
-                </div>
 
-                <div style={formSelector}>
-                <label>Select your gender:</label>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                        <span>
-                            <input
-                                type="radio"
-                                name="gender"
-                                checked={gender === 'male'}
-                                onChange={() => setGender('male')}
-                            />
-                            <span style={{ marginLeft: "5px" }}>Male</span>
-                        </span>
-                        <span>
-                            <input
-                                type="radio"
-                                name="gender"
-                                checked={gender === 'female'}
-                                onChange={() => setGender('female')}
-                            />
-                            <span style={{ marginLeft: "5px" }}>Female</span>
-                        </span>
-                    </div>
+      // Calculate TDEE
+      const tdee = bmr * activityMultipliers[activityLevel];
 
-                </div>
+      setData({ 
+        ...data, 
+        results: { 
+          bmi: parseFloat(bmi.toFixed(1)),
+          bmr: Math.round(bmr),
+          tdee: Math.round(tdee)
+        }
+      });
+    } else {
+      setData({ ...data, results: null });
+    }
+  };
 
-                <div>
-                    <label>Your age: </label>
-                    <input type = "number" 
-                    value = {age} 
-                    placeholder="Enter your age" 
-                    onChange={handleAgeChange}
-                    className='formInput'/>
-                    {errors.age && <div>{errors.age}</div>}
-                </div>
+  // Form options data
+  const unitOptions = [
+    { value: 'metric', label: 'Metric (cm, kg)' },
+    { value: 'imperial', label: 'Imperial (inches, lbs)' }
+  ];
 
-                <div>
-                    <label>Your weight: </label>
-                    <input type = "number" 
-                    value = {weight} 
-                    placeholder="Enter your weight" 
-                    onChange={handleWeightChange}
-                    className='formInput'/>
-                    {errors.weight && <div>{errors.weight}</div>}
-                </div>
+  const genderOptions = [
+    { value: 'male', label: 'Male' },
+    { value: 'female', label: 'Female' }
+  ];
 
-                <div>
-                    <label>Your height: </label>
-                    <input type = "number" 
-                    value = {height} placeholder="Enter your height" 
-                    onChange={handleHeightChange}
-                    className='formInput'/>
-                    {errors.height && <div>{errors.height}</div>}
-                </div>
+  const activityOptions = [
+    { value: '0', label: 'Office job (No exercise)' },
+    { value: '1', label: 'Light exercise (1-2 days/week)' },
+    { value: '2', label: 'Moderate exercise (3-5 days/week)' },
+    { value: '3', label: 'Active (All week)' },
+    { value: '4', label: 'Very active (All week but 2x per day)' }
+  ];
 
-                <div>
-                    <label>Activity Level:</label>
-                    <select
-                        value={activityLevel}
-                        onChange={(e) => setActivityLevel(e.target.value)}
-                    className='formInput'>
+  const goalOptions = [
+    { value: 'stronger', label: 'Get Stronger' },
+    { value: 'muscle gain', label: 'Build Muscle Mass' },
+    { value: 'become lean_defined', label: 'Get Lean and Defined' },
+    { value: 'reduce bodyWeight', label: 'Reduce BodyWeight' },
+    { value: 'improve health', label: 'Improve Health and Wellness' },
+    { value: 'boost sports performance', label: 'Boost Sports Performance' }
+  ];
 
-                        <option value="sedentary">Office job (No exercise)</option>
-                        <option value="light">Light exercise (1-2 days/week)</option>
-                        <option value="moderate">Moderate exercise (3-5 days/week)</option>
-                        <option value="active">Active (All week)</option>
-                        <option value="extreme">Very active (All week but 2x per day)</option>
-                    </select>
-                </div>
-                <button type="submit" className={`calculateButton ${outfit.className}`}>CALCULATE</button>
-                {results && (
-                    <div>
-                        <h1 style={resultsStyle}>Results:</h1>
-                        <p><b>BMI: </b>{results.bmi}</p>
-                        <p><b>BMR: </b>{results.bmr} calories/day</p>
-                        <p><b>TDEE: </b>{results.tdee} calories/day</p>
+  const fitnessLevelOptions = [
+    { value: 'beginner', label: 'Beginner' },
+    { value: 'intermediate', label: 'Intermediate' },
+    { value: 'advance', label: 'Advance' }
+  ];
 
-                        <button type="button" onClick={() => showSecondForm(true)} // Show the second form
-                        className={`calculateButton ${outfit.className}`}>
-                        NEXT
-                        </button>
-                    </div>
+  return (
+    <div style={styles.formContainer}>
+      {!secondForm ? (
+        <form onSubmit={calculateResult}>
+          <RadioGroup
+            label="Select preferred measuring system:"
+            name="unit"
+            value={data.unit}
+            options={unitOptions}
+            onChange={(value) => setData({ ...data, unit: value })}
+          />
 
-                )}
-            </form>
-            ) : (
-                <form>
-                <div>
-                    <label>What is your goal of doing exercise?</label>
-                    <select
-                        value={goal}
-                        onChange={(e) => setGoal(e.target.value)}
-                        className='formInput'>
+          <RadioGroup
+            label="Select your gender:"
+            name="gender"
+            value={data.gender}
+            options={genderOptions}
+            onChange={(value) => setData({ ...data, gender: value })}
+          />
 
-                        <option value="stronger">Get Stronger</option>
-                        <option value="muscle">Build Muscle Mass</option>
-                        <option value="lean_defined">Get Lean and Defined</option>
-                        <option value="bodyWeight">Reduce BodyWeight</option>
-                        <option value="health">Improve Health and Wellness</option>
-                        <option value="sports">Boost Sports Performance</option>
-                    </select>
-                </div>
-                <div>
-                    <label>How many weights or gym equipment do you have?</label>
-                    <input 
-                        type = 'number'
-                        value = {equipments} placeholder="Enter the amount of your equipments"
-                        className='formInput'
-                        onChange={(e) => setEquipments(e.target.value)}/>
-                </div>
-                <div>
-                    <label>What is your level of fitness?</label>
-                    <select
-                        value={goal}
-                        onChange={(e) => setGoal(e.target.value)}
-                        className='formInput'>
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advance">Advance</option>
-                    </select>
-                </div>
-                <button type="button" onClick={() => showSecondForm(false)} // Show the second form
-                        className={`calculateButton ${outfit.className}`}>
-                BACK
-                </button>
-            </form>
-            )}         
-        </div>
-    )
+          <FormInput
+            label="Your age:"
+            value={data.age}
+            placeholder="Enter your age"
+            onChange={handleInputChange('age')}
+            error={errors.age}
+          />
+
+          <FormInput
+            label="Your weight:"
+            value={data.weight}
+            placeholder="Enter your weight"
+            onChange={handleInputChange('weight')}
+            error={errors.weight}
+          />
+
+          <FormInput
+            label="Your height:"
+            value={data.height}
+            placeholder="Enter your height"
+            onChange={handleInputChange('height')}
+            error={errors.height}
+          />
+
+          <FormInput
+            label="Activity Level:"
+            value={data.activityLevel}
+            onChange={handleInputChange('activityLevel')}
+            selectOptions={activityOptions}
+          />
+
+          <button type="submit" className={`calculateButton ${outfit.className}`}>
+            CALCULATE
+          </button>
+
+          {data.results && (
+            <div>
+              <h1 style={styles.resultsStyle}>Results:</h1>
+              <p><b>BMI: </b>{data.results.bmi}</p>
+              <p><b>BMR: </b>{data.results.bmr} calories/day</p>
+              <p><b>TDEE: </b>{data.results.tdee} calories/day</p>
+
+              <button 
+                type="button" 
+                onClick={() => showSecondForm(true)}
+                className={`calculateButton ${outfit.className}`}
+              >
+                NEXT
+              </button>
+            </div>
+          )}
+        </form>
+      ) : (
+        <form>
+          <FormInput
+            label="What is your goal of doing exercise?"
+            value={data.goal}
+            onChange={handleInputChange('goal')}
+            selectOptions={goalOptions}
+          />
+
+          <FormInput
+            label="How many weights or gym equipment do you have?"
+            value={data.equipments}
+            placeholder="Enter the amount of your equipments"
+            onChange={handleInputChange('equipments')}
+          />
+
+          <FormInput
+            label="What is your level of fitness?"
+            value={data.level}
+            onChange={handleInputChange('level')}
+            selectOptions={fitnessLevelOptions}
+          />
+
+          <button 
+            type="button" 
+            onClick={() => showSecondForm(false)}
+            className={`calculateButton ${outfit.className}`}
+          >
+            BACK
+          </button>
+          <button 
+            type="button" 
+            onClick={() => setSubmit(true)}
+            className={`calculateButton ${outfit.className}`}
+          >
+            SUBMIT
+          </button>
+        </form>
+      )}
+    </div>
+  );
 }
-
