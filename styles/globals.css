@@ -70,6 +70,7 @@ body{
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     padding: 5px 10px;
+    cursor: pointer;
 }
 
 .calculateButton::before {
@@ -113,5 +114,19 @@ form label {
     background-color: black; 
     color: white; 
 }
+
+.exerciseCard {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .exerciseCard:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+  }
 
 

@@ -1,10 +1,10 @@
-import react from "react";
+import React from "react";
 
 const bodyContainer = {
-    width: "600px",
+    width: "400px",
     height: "100%",
     backdropFilter: "blur(5px)",
-    backgroundColor: " rgba(255, 255, 255, 0.06)",
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
     margin: "40px 40px 40px 0",
     padding: "30px",
     borderRadius: "20px",
@@ -12,111 +12,55 @@ const bodyContainer = {
     display: "flex",
     justifyContent: "center",
     position: "relative"
-}
+};
 
-const bodySTyles = {
-    height: "480px",
-    objectFit: "cover"
-}
-
-const chestStyles = {
-    position: "absolute",
-    height: "480px",
-    left: "58px",
-}
-
-const absStyles = {
-    position: "absolute",
-    height: "480px",
-    left: "58px",
+const redMaker = {
     filter: "brightness(0) saturate(100%) invert(18%) sepia(83%) saturate(7500%) hue-rotate(0deg) brightness(101%) contrast(107%)"
-}
+};
 
-const shoulderStyles = {
+const baseMuscleStyle = {
     position: "absolute",
-    height: "480px",
-    left: "58px"
-}
+    height: "340px",
+};
 
-const bicepStyles = {
-    position: "absolute",
-    height: "480px",
-    left: "58px",
-}
+const bodyStyles = {
+    height: "340px",
+    objectFit: "cover"
+};
 
-const forearmStyles = {
-    position: "absolute",
-    height: "480px",
-    left: "58px"
-}
+const muscleMap = {
+    pectorals: { src: "/resources/chest.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    abs: { src: "/resources/abs.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    delts: { src: "/resources/shoulders.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    biceps: { src: "/resources/biceps.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    forearms: { src: "/resources/forearms.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    quads: { src: "/resources/quadriceps.svg", style: { ...baseMuscleStyle, left: "28px" } },
+    calves: { src: "/resources/calves.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    hamstrings: { src: "/resources/hamstrings.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    glutes: { src: "/resources/glutes.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    triceps: { src: "/resources/triceps.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    "lower back": { src: "/resources/lowerBack.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    "upper back": { src: "/resources/back.svg", style: { ...baseMuscleStyle, right: "28px" } },
+    traps: { src: "/resources/trapezius.svg", style: { ...baseMuscleStyle, right: "28px" } },
+};
 
-const quadricepStyles = {
-    position: "absolute",
-    height: "480px",
-    left: "58px"
-}
+export default function Body({ targetMuscle }) {
+    const normalizedTarget = targetMuscle?.toLowerCase();
 
-const calvesStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
+    return (
+        <div style={bodyContainer}>
+            <img src="/resources/bodyBase.svg" style={bodyStyles} />
 
-const hamstringStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
-
-const glutesStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
-
-const tricepsStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
-
-const lowerBackStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
-
-const backStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px"
-}
-
-const trapeziusStyles = {
-    position: "absolute",
-    height: "480px",
-    right: "58px",
-}
-
-export default function Body() {
-    return(
-        <div style={bodyContainer}> 
-            <img src="/resources/bodyBase.svg" style={bodySTyles}/>
-            <img src="/resources/chest.svg" style={chestStyles}/>
-            <img src="/resources/abs.svg" style={absStyles}/>
-            <img src="/resources/shoulders.svg" style={shoulderStyles}/>
-            <img src="/resources/biceps.svg" style={bicepStyles}/>
-            <img src="/resources/forearms.svg" style={forearmStyles}/>
-            <img src="/resources/quadriceps.svg" style={quadricepStyles}/>
-
-
-            <img src="/resources/calves.svg" style={calvesStyles}/>
-            <img src="/resources/hamstrings.svg" style={hamstringStyles}/>
-            <img src="/resources/glutes.svg" style={glutesStyles}/>
-            <img src="/resources/triceps.svg" style={tricepsStyles}/>
-            <img src="/resources/lowerBack.svg" style={lowerBackStyles}/>
-            <img src="/resources/back.svg" style={backStyles}/>
-            <img src="/resources/trapezius.svg" style={trapeziusStyles}/>
+            {Object.entries(muscleMap).map(([muscle, { src, style }]) => (
+                <img
+                    key={muscle}
+                    src={src}
+                    style={{
+                        ...style,
+                        ...(normalizedTarget === muscle ? redMaker : {})
+                    }}
+                />
+            ))}
         </div>
     );
-};
+}
