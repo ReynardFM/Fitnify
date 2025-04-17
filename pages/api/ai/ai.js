@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Outfit } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 import { isAbsoluteUrl } from 'next/dist/shared/lib/utils';
-import  Body from '../../components/bodyComponent';
+import  Body from '../../components/bodyComponent/bodyComponent';
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
