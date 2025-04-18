@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Outfit } from "next/font/google";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
@@ -28,11 +28,41 @@ const headerNav = {
 }
 
 export default function Header(){
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+        // Only check localStorage, don't modify it here
+        if(localStorage.getItem("Plan")) {
+            setDisabled(false); // Enable button if Plan exists
+        }
+    }, []);
+
+    const reset = () => {
+        if(!disabled) {
+            localStorage.removeItem("Plan");
+            window.location.reload();
+        }
+    }
+
     return(
         <div style={header}>
             <h1 className={outfit.className} style={logo}>FITNIFY™</h1>
-            <nav style={headerNav}>
-                <a href="#" className={`headerButton ${outfit.className}`}>USER</a>
+            <nav style={headerNav}>   
+                <a 
+                    href="#" 
+                    className={`headerButton ${outfit.className}`}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        reset();
+                    }}
+                    style={{
+                        pointerEvents: disabled ? 'none' : 'auto',
+                        opacity: disabled ? 0.5 : 1,
+                        cursor: disabled ? 'default' : 'pointer'
+                    }}
+                >
+                    RESET
+                </a>
             </nav>
         </div>
     );
