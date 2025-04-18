@@ -1,11 +1,11 @@
 import React from 'react';
-import Header from './components/headerComponent';
+import Header from './components/headerComponent/headerComponent';
 import Muscle from './components/muscle';
-import FitnessLevel from './components/fitnessLevel';
+import FitnessLevel from './components/fitnessLevel/fitnessLevel';
 import {useState, useEffect} from 'react';
 import { Outfit } from "next/font/google";
 import { lazy, Suspense } from 'react';
-const LazyPlan = lazy(() => import('./api/ai'));
+const LazyPlan = lazy(() => import('./api/ai/ai'));
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 const pageOrganization = {
   display: "flex",
