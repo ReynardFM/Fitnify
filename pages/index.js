@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import Header from '../components/headerComponent/headerComponent';
-import FitnessLevel from '../components/fitnessLevel/fitnessLevel';
-const LazyPlan = lazy(() => import('../api/ai/ai'));
+import Header from './components/headerComponent/headerComponent.js';
+import FitnessLevel from './components/fitnessLevel/fitnessLevel.js';
+const LazyPlan = lazy(() => import('./api/ai/ai.js'));
 
 export default function Home() {
   const [plan, setPlan] = useState(null);
