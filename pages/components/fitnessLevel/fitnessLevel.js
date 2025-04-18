@@ -1,7 +1,8 @@
+"use client";
+
 import { Outfit } from "next/font/google";
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
-// Styles moved to separate object
 const styles = {
   formContainer: {
     width: "400px",
@@ -30,15 +31,8 @@ const styles = {
   }
 };
 
-const activityMultipliers = [
-  1.2,
-  1.375,
-  1.55,
-  1.725,
-  1.9
-];
+const activityMultipliers = [1.2, 1.375, 1.55, 1.725, 1.9];
 
-// Reusable form input component
 const FormInput = ({ label, type = "number", value, placeholder, onChange, error, selectOptions }) => {
   return (
     <div style={styles.formSelector}>
@@ -65,7 +59,6 @@ const FormInput = ({ label, type = "number", value, placeholder, onChange, error
   );
 };
 
-// Reusable radio group component
 const RadioGroup = ({ label, name, value, options, onChange }) => {
   return (
     <div style={styles.formSelector}>
@@ -87,7 +80,26 @@ const RadioGroup = ({ label, name, value, options, onChange }) => {
   );
 };
 
-export default function FitnessLevel({ showSecondForm, secondForm, data, setData, errors, setErrors, setSubmit }) {
+export default function FitnessLevel({
+  showSecondForm = () => {},
+  secondForm = false,
+  data = {
+    unit: 'metric',
+    gender: 'male',
+    age: '',
+    height: '',
+    weight: '',
+    activityLevel: '0',
+    results: null,
+    equipments: '',
+    goal: 'stronger',
+    level: 'beginner'
+  },
+  setData = () => {},
+  errors = {},
+  setErrors = () => {},
+  setSubmit = () => {}
+}) {
   const validateInputs = () => {
     const { age, height, weight } = data;
     const newErrors = { age: "", height: "", weight: "" };
@@ -125,12 +137,10 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
   };
   
   const handleSecondFormSubmit = (event) => {
-    event.preventDefault(); // Prevent the form from reloading the page
-  
+    event.preventDefault();
     const hasErrors = validateSecondFormInputs();
-  
     if (!hasErrors) {
-      setSubmit(true); // Proceed with submission logic
+      setSubmit(true);
     }
   };
 
@@ -140,18 +150,22 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
 
   const calculateResult = (event) => {
     event.preventDefault();     
-    const { unit, age, height, weight, gender, activityLevel } = data;
+    const { 
+      unit = 'metric',
+      age = '',
+      height = '',
+      weight = '',
+      gender = 'male',
+      activityLevel = '0' 
+    } = data || {};
+    
     const hasErrors = validateInputs();
     
     if (!hasErrors) {
-      // Convert to metric if necessary
       const weightKg = unit === 'metric' ? weight : weight * 0.453592;
       const heightM = unit === 'metric' ? height / 100 : height * 0.0254;
-
-      // Calculate BMI
       const bmi = weightKg / (heightM * heightM);
-
-      // Calculate BMR (Harris-Benedict Equation)
+      
       let bmr;
       if (gender === 'male') {
         bmr = 88.362 + (13.397 * weightKg) + (4.799 * heightM*100) - (5.677 * age);
@@ -159,8 +173,7 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
         bmr = 447.593 + (9.247 * weightKg) + (3.098 * heightM*100) - (4.330 * age);
       }
 
-      // Calculate TDEE
-      const tdee = bmr * activityMultipliers[activityLevel];
+      const tdee = bmr * activityMultipliers[Number(activityLevel)];
 
       setData({ 
         ...data, 
@@ -175,7 +188,6 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
     }
   };
 
-  // Form options data
   const unitOptions = [
     { value: 'metric', label: 'Metric (cm, kg)' },
     { value: 'imperial', label: 'Imperial (inches, lbs)' }
@@ -310,7 +322,6 @@ export default function FitnessLevel({ showSecondForm, secondForm, data, setData
             onClick={() => showSecondForm(false)}
             className={`calculateButton ${outfit.className}`}
           >
-
             BACK
           </button>
           <button 
