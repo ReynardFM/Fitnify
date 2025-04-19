@@ -196,19 +196,20 @@ export default function AiPage({ data, plan, setPlan }) {
     }
   },
   "complete_example": {
-    "input": {
-      "unit": "metric",
-      "gender": "male",
-      "age": 30,
-      "height": 175,
-      "weight": 80,
-      "activityLevel": "2",
-      "goal": "muscle gain",
-      "level": "intermediate",
-      "equipments": 5
-    },
-    "output": [
-      {
+    {
+  "input": {
+    "unit": "metric",
+    "gender": "male",
+    "age": 30,
+    "height": 175,
+    "weight": 80,
+    "activityLevel": "2",
+    "goal": "muscle gain",
+    "level": "intermediate",
+    "equipments": 5
+  },
+  "output": [
+    {
       "Day": "1",
       "exercise": [
         {
@@ -404,6 +405,18 @@ export default function AiPage({ data, plan, setPlan }) {
         }
       ]
     }
+  ],
+  "validation": {
+    "checks_passed": true,
+    "notes": [
+      "All exercises from approved list",
+      "Proper equipment usage",
+      "Balanced muscle targeting",
+      "Appropriate volume for intermediate level",
+      "Adheres to time constraints"
+    ]
+  }
+}
   ],
   "validation": {
     "required": [
