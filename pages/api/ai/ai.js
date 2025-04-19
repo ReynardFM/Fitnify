@@ -117,6 +117,7 @@ export default function AiPage({ data, plan, setPlan }) {
 
   useEffect(() => {
     console.log(process.env.EX_API);
+    console.log(process.env.AI_API);
     const url = `https://exercisedb.p.rapidapi.com/exercises/name/${instruction.split('').map(char => (char === ' ' ? '%20' : char)).join('')}?offset=0&limit=10`;
     const options = {
       method: 'GET',
