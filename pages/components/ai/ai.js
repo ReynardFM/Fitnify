@@ -114,8 +114,6 @@ export default function AiPage({ data, plan, setPlan }) {
   }
 
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_EX_API);
-    console.log(process.env.NEXT_PUBLIC_AI_API);
     const url = `https://exercisedb.p.rapidapi.com/exercises/name/${instruction.split('').map(char => (char === ' ' ? '%20' : char)).join('')}?offset=0&limit=10`;
     const options = {
       method: 'GET',
@@ -138,8 +136,7 @@ export default function AiPage({ data, plan, setPlan }) {
         const musclesGif = result[0].gifUrl;
         const muscleInstruction = result[0].instructions;
         setImage(musclesGif);
-        setMuscles(muscleInstruction);
-        console.log(image, muscles); // For debug
+        setMuscles(muscleInstruction);// For debug
       } catch (error) {
         console.error('Failed to fetch muscle data:', error);
       }
@@ -466,7 +463,6 @@ export default function AiPage({ data, plan, setPlan }) {
             top_p: 0.7,
           });
           const parsedPlan = JSON.parse(chatCompletion.choices[0].message.content);
-          console.log(parsedPlan);
           setPlan(parsedPlan);
           if (!localStorage.getItem("Plan")) {
             localStorage.setItem("Plan", JSON.stringify(parsedPlan));
