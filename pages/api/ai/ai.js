@@ -116,12 +116,12 @@ export default function AiPage({ data, plan, setPlan }) {
   }
 
   useEffect(() => {
-    console.log(instruction.split('').map(char => (char === ' ' ? '%20' : char)).join(''));
+    console.log(process.env.EX_API);
     const url = `https://exercisedb.p.rapidapi.com/exercises/name/${instruction.split('').map(char => (char === ' ' ? '%20' : char)).join('')}?offset=0&limit=10`;
     const options = {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': process.env.EX_API,
+        'x-rapidapi-key': (process.env.EX_API),
         'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
       }
     };
@@ -156,12 +156,12 @@ export default function AiPage({ data, plan, setPlan }) {
           const client = new HfInference(process.env.AI_API);
           
           const chatCompletion = await client.chatCompletion({
-            model: "meta-llama/Llama-3.2-3B-Instruct",
+            model: "meta-llama/Llama-3.1-8B-Instruct",
             messages: [
               {
                 role: "user",
                 content: `{
-  "prompt": "Generate a personalized weekly workout plan using ONLY the provided user data. Respond with a valid JSON array of workout days - no explanations or additional text outside the JSON structure.",
+  "prompt": "Generate a personalized weekly workout plan using ONLY the provided user data. Respond with a valid JSON array of workout days - no explanations or additional text outside the JSON string.no code block.",
   "user_data": {
     "unit": ${data.unit},
     "gender": ${data.gender},
@@ -449,7 +449,7 @@ export default function AiPage({ data, plan, setPlan }) {
               }
             ],
             provider: "nebius",
-            temperature: 0.5,
+            temperature: 1.0,
             max_tokens: 2048,
             top_p: 0.7,
           });
