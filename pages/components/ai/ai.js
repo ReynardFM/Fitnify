@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Outfit } from "next/font/google";
 import { motion, AnimatePresence } from "framer-motion";
 import { isAbsoluteUrl } from 'next/dist/shared/lib/utils';
-import  Body from '../../components/bodyComponent/bodyComponent';
-
 const outfit = Outfit({ subsets: ["latin"], weight: ["600"] });
 
 const buttonContainer = {
@@ -116,13 +114,13 @@ export default function AiPage({ data, plan, setPlan }) {
   }
 
   useEffect(() => {
-    console.log(process.env.EX_API);
-    console.log(process.env.AI_API);
+    console.log(process.env.NEXT_APP_EX_API);
+    console.log(process.env.NEXT_APP_AI_API);
     const url = `https://exercisedb.p.rapidapi.com/exercises/name/${instruction.split('').map(char => (char === ' ' ? '%20' : char)).join('')}?offset=0&limit=10`;
     const options = {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': (process.env.EX_API),
+        'x-rapidapi-key': (process.env.NEXT_APP_EX_API),
         'x-rapidapi-host': 'exercisedb.p.rapidapi.com'
       }
     };
@@ -154,7 +152,7 @@ export default function AiPage({ data, plan, setPlan }) {
       console.log("Start fetching fitness routine...");
       const fetchFitnessRoutine = async () => {
         try {
-          const client = new HfInference(process.env.AI_API);
+          const client = new HfInference(process.env.NEXT_APP_AI_API);
           
           const chatCompletion = await client.chatCompletion({
             model: "meta-llama/Llama-3.1-8B-Instruct",
